@@ -1,0 +1,17 @@
+# Development and Build Artifacts
+__pycache__/
+.pytest_cache/
+.vscode/
+*.pyc
+
+# Virtual Environment
+venv/
+
+# Dependency Management
+*.lock
+*.log
+
+# Editor Specific Files
+.vscode/
+
+
