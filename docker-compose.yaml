@@ -3,7 +3,7 @@ version: '3.8'
 services:
   app:
     build: ./app
-    command: ["python", "manage.py", "runserver", "0.0.0.0:8002"]
+    command: ["uvicorn", "app.server.app:app", "--host", "0.0.0.0", "--port", "8002"]
     ports:
       - 8002:8002
     volumes:
@@ -33,12 +33,12 @@ services:
     env_file:
       - .env
     environment:
-        # ME_CONFIG_MONGODB_AUTH_USERNAME: ${MONGO_ROOT_USER}
-        # ME_CONFIG_MONGODB_AUTH_PASSWORD: ${MONGO_ROOT_PASSWORD}
+        ME_CONFIG_MONGODB_AUTH_USERNAME: ${MONGO_ROOT_USER}
+        ME_CONFIG_MONGODB_AUTH_PASSWORD: ${MONGO_ROOT_PASSWORD}
         ME_CONFIG_BASICAUTH_USERNAME: ${ME_USERNAME}
         ME_CONFIG_BASICAUTH_PASSWORD: ${ME_PASSWORD}
-        # ME_CONFIG_MONGODB_SERVER: mongodb
-        ME_CONFIG_MONGODB_URL: mongodb://${MONGO_ROOT_USER}:${MONGO_ROOT_PASSWORD}@mongodb:27017/
+        ME_CONFIG_MONGODB_SERVER: mongodb
+        # ME_CONFIG_MONGODB_URL: mongodb://${MONGO_ROOT_USER}:${MONGO_ROOT_PASSWORD}@mongodb:27017/
         
     depends_on:
       - mongodb
