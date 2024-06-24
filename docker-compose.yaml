@@ -3,35 +3,49 @@ version: '3.8'
 services:
   app:
     build: ./app
-    command: ["python", "manage.py", "runserver", "0.0.0.0:8002"]
+    command: ["uvicorn", "app.server.app:app", "--host", "0.0.0.0", "--port", "8002"]
     ports:
       - 8002:8002
     volumes:
       - .:/usr/src/app
     depends_on:
-      - mongo
+      - mongodb
 
-  mongo:
+  mongodb:
     image: mongo
+    container_name: mongo
     restart: always
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
-    ports:
-      - 27017:27017
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+    # ports:
+    #   - 27017:27017
     volumes:
       - mongo-data:/data/db
-
+      - /etc/timezone:/etc/timezone:ro
+    
   mongo-express:
     image: mongo-express
+    container_name: mongo_ex
     restart: always
     ports:
       - 8081:8081
+    env_file:
+      - .env
     environment:
-      ME_CONFIG_BASICAUTH_USERNAME: user
-      ME_CONFIG_BASICAUTH_PASSWORD: password
-      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+        ME_CONFIG_MONGODB_AUTH_USERNAME: ${MONGO_ROOT_USER}
+        ME_CONFIG_MONGODB_AUTH_PASSWORD: ${MONGO_ROOT_PASSWORD}
+        ME_CONFIG_BASICAUTH_USERNAME: ${ME_USERNAME}
+        ME_CONFIG_BASICAUTH_PASSWORD: ${ME_PASSWORD}
+        ME_CONFIG_MONGODB_SERVER: mongodb
+        # ME_CONFIG_MONGODB_URL: mongodb://${MONGO_ROOT_USER}:${MONGO_ROOT_PASSWORD}@mongodb:27017/
+        
+    depends_on:
+      - mongodb
+      
 
 volumes:
   mongo-data:
+
+
 
